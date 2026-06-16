@@ -25242,6 +25242,10 @@ const surveyResponses = NPS_FEEDBACK_DATA.map((item, sourceIndex) => {
     return aggregates.map(aggregate => metric === 'nps' ? aggregate.nps : aggregate[metric]);
   }
 
+  function metricValuesFromAggWithNull(aggregates, metric) {
+    return aggregates.map(aggregate => aggregate.responses ? (metric === 'nps' ? aggregate.nps : aggregate[metric]) : null);
+  }
+
   function zoomYAxis(values, minBound = 0, maxBound = 100) {
     const numbers = values.flat().filter(Number.isFinite);
     if (!numbers.length) return { min: minBound, max: maxBound };
@@ -25519,7 +25523,7 @@ const surveyResponses = NPS_FEEDBACK_DATA.map((item, sourceIndex) => {
     const departments = selectedDepartmentName
       ? [selectedDepartment()].filter(Boolean)
       : visibleDepartments();
-    const seriesData = departments.map(department => metricValuesFromAgg(
+    const seriesData = departments.map(department => metricValuesFromAggWithNull(
       aggregateByBuckets('departmentTrend', { department: department.name }),
       'nps'
     ));
@@ -25541,7 +25545,7 @@ const surveyResponses = NPS_FEEDBACK_DATA.map((item, sourceIndex) => {
       },
       yAxis: { type: 'value', min: axis.min, max: axis.max, axisLabel: { color: '#64748b' }, splitLine: { lineStyle: { color: '#eef2f7' } } },
       series: departments.map((department, index) => ({
-        name: department.name, type: 'line', smooth: true,
+        name: department.name, type: 'line', smooth: true, connectNulls: true,
         showSymbol: chartLabels('departmentTrend').length <= 16,
         symbol: 'circle', symbolSize: 6, lineStyle: { width: 3 }, itemStyle: { borderWidth: 2 },
         emphasis: { focus: 'series', scale: 1.4 }, data: seriesData[index]
@@ -25714,7 +25718,7 @@ const surveyResponses = NPS_FEEDBACK_DATA.map((item, sourceIndex) => {
       charts.assignmentTrend?.setOption(noDataOption(), true);
       return;
     }
-    const seriesData = groups.map(group => metricValuesFromAgg(
+    const seriesData = groups.map(group => metricValuesFromAggWithNull(
       aggregateByBuckets('assignmentTrend', { department: selectedDepartmentName, assignmentGroup: group.name }),
       'nps'
     ));
@@ -25731,7 +25735,7 @@ const surveyResponses = NPS_FEEDBACK_DATA.map((item, sourceIndex) => {
       },
       yAxis: { type: 'value', min: axis.min, max: axis.max, axisLabel: { color: '#64748b' }, splitLine: { lineStyle: { color: '#eef2f7' } } },
       series: groups.map((group, index) => ({
-        name: group.name, type: 'line', smooth: true,
+        name: group.name, type: 'line', smooth: true, connectNulls: true,
         showSymbol: chartLabels('assignmentTrend').length <= 16,
         symbol: 'circle', symbolSize: 6, lineStyle: { width: 3 }, itemStyle: { borderWidth: 2 },
         emphasis: { focus: 'series', scale: 1.4 }, data: seriesData[index]
