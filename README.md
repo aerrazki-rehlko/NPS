@@ -3,6 +3,7 @@
 dashboard-v2 : 
 
     - Fixed the Target threshold line visualisation (removed label redundancy)
+    - Fixed the box layout consistency (vertically align NPS composition chart and department NPS ranking chart)
     - Modified the + and - icons with arrows on the assignment groups change period comparison
     - Centralised data in a json format array (see the model below)
 
